@@ -27,6 +27,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: "Bundle / Build files to scan"
+        run: zip -r my-app.zip my-app
+
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -40,7 +43,15 @@ jobs:
         # Sometimes there are conflicts, e.g. README.md
         run: unzip -o pipeline-scan-LATEST.zip
       - name: Run Pipeline Scanner
-        run: java -Dpipeline.debug=true -jar pipeline-scan.jar --veracode_api_id "${{secrets.ORG_VERACODE_API_ID}}" --veracode_api_key "${{secrets.ORG_VERACODE_API_KEY}}" --file "webgoat-server-8.2.2.jar" --fail_on_severity="Very High, High" -jo true
+        run: java -Dpipeline.debug=true -jar pipeline-scan.jar --veracode_api_id "${{secrets.ORG_VERACODE_API_ID}}" --veracode_api_key "${{secrets.ORG_VERACODE_API_KEY}}" --file "my-app.zip" --fail_on_severity="Very High, High" -jo true
+
+      - run: ls -l
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: results
+          path: results.json
 
       - name: Convert pipeline scan output to SARIF format
         if: always()
