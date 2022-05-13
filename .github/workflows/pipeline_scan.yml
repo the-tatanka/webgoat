@@ -55,7 +55,7 @@ jobs:
 
       - name: Convert pipeline scan output to SARIF format
         if: always()
-        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v0.1.2
+        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v0.1.5
         with:
           pipeline-results-json: results.json
           output-results-sarif: veracode-results.sarif
